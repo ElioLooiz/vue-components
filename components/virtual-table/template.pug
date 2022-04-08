@@ -1,0 +1,94 @@
+.virtual-table(ref="virtualTable" data-scroll="start")
+  wrapper-toolbar(covered ref="toolbar")
+    slot(name="toolbar")
+  .virtual-table__container(@mouseleave="() => hoveredColumn = null")
+    .virtual-table__header
+      virtual-list.virtual-table__header-left(v-if="!!tableColumnsLeft && !isMobile"
+        :data="leftHeader"
+        :height="heightHeader"
+        :width="widthLeftTable"
+        :scroll-visible="{ horizontal: false, vertical: false }")
+        render-header(slot-scope="item" :item="item" :hovered-header.sync="hoveredColumn")
+      virtual-list(v-if="!!tableColumnsMiddle"
+        :data="middleHeader"
+        :height="heightHeader"
+        :width="widthMiddleTable"
+        :scroll-position.sync="scrollPosition"
+        :scroll-visible="{ horizontal: false, vertical: false }")
+        render-header(slot-scope="item" :item="item" :hovered-header.sync="hoveredColumn")
+      virtual-list.virtual-table__header-right(v-if="!!tableColumnsRight && !isMobile"
+        :data="rightHeader"
+        :height="heightHeader"
+        :width="widthRightTable"
+        :scroll-visible="{ horizontal: false, vertical: false }")
+        render-header(slot-scope="item" :item="item" :hovered-header.sync="hoveredColumn")
+    template(v-if="items.length && !dataLoading")
+      .virtual-table__body(v-clickoutside="handleClickoutside"
+        @mouseleave="() => hoveredRow = null"
+        @click="handleTableClick")
+        virtual-list.virtual-table__body-left(v-if="!!tableColumnsLeft  && !isMobile"
+          :data="leftItems"
+          :height="bodyHeight - (_showSummary ? heightFooter : 0)"
+          :width="widthLeftTable"
+          :scroll-position.sync="scrollPosition"
+          :scroll-visible="{ horizontal: false, vertical: false }"
+          @mouseleave-content="() => (hoveredRow = null, hoveredColumn = null)")
+          render-cell(slot-scope="item"
+            :item="item"
+            v-bind="cellAttributes"
+            v-on="cellListeners")
+        virtual-list(v-if="!!tableColumnsMiddle"
+          :data="middleItems"
+          :height="bodyHeight - (_showSummary ? heightFooter : 0)"
+          :width="widthMiddleTable"
+          :scroll-position.sync="scrollPosition"
+          :scroll-visible="{ horizontal: !_showSummary, vertical: !tableColumnsRight }"
+          @mouseleave-content="() => (hoveredRow = null, hoveredColumn = null)"
+          @visible-horizontal-scroll="visibleHorizontalScroll = $event")
+          render-cell(slot-scope="item"
+            :item="item"
+            v-bind="cellAttributes"
+            v-on="cellListeners")
+        virtual-list.virtual-table__body-right(v-if="!!tableColumnsRight && !isMobile"
+          :data="rightItems"
+          :height="bodyHeight - (_showSummary ? heightFooter : 0)"
+          :width="widthRightTable"
+          :scroll-position.sync="scrollPosition"
+          :scroll-visible="{ horizontal: false, vertical: true }"
+          @mouseleave-content="() => (hoveredRow = null, hoveredColumn = null)")
+          render-cell(slot-scope="item"
+            :item="item"
+            v-bind="cellAttributes"
+            v-on="cellListeners")
+      .virtual-table__footer(v-if="_showSummary")
+        virtual-list.virtual-table__footer-left(v-if="!!tableColumnsLeft && !isMobile"
+          :data="leftFooter"
+          :height="heightFooter"
+          :width="widthLeftTable"
+          :scroll-visible="{ horizontal: false, vertical: false }"
+          @mouseleave-content="() => (hoveredRow = null, hoveredColumn = null)")
+          render-footer(slot-scope="item" :item="item" :hovered-footer.sync="hoveredColumn")
+        virtual-list(v-if="!!tableColumnsMiddle"
+          :data="middleFooter"
+          :height="heightFooter"
+          :width="widthMiddleTable"
+          :scroll-position.sync="scrollPosition"
+          :scroll-visible="{ horizontal: true, vertical: false }"
+          @mouseleave-content="() => (hoveredRow = null, hoveredColumn = null)")
+          render-footer(slot-scope="item" :item="item" :hovered-footer.sync="hoveredColumn")
+        virtual-list.virtual-table__footer-right(v-if="!!tableColumnsRight && !isMobile"
+          :data="rightFooter"
+          :height="heightFooter"
+          :width="widthRightTable"
+          :scroll-visible="{ horizontal: false, vertical: false }"
+          @mouseleave-content="() => (hoveredRow = null, hoveredColumn = null)")
+          render-footer(slot-scope="item" :item="item" :hovered-footer.sync="hoveredColumn")
+    .virtual-table__error.flex.flex-column.flex-center(v-else :style="{ height: `${bodyHeight}px` }")
+      h3.text-center.vertical-middle.color-primary(v-if="dataLoading") {{ $t('el.table.loading') }}
+      h3.text-center.vertical-middle.color-primary(v-else-if="dataError")
+        .errorMessage
+          h1 {{ dataError.title }}
+          h2 {{ dataError.description }}
+      h3.text-center.vertical-middle.color-primary(v-else-if="!items.length") {{ $t('el.table.notFound') }}
+    .virtual-table__slot
+      slot

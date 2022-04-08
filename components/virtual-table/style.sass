@@ -1,0 +1,161 @@
+.virtual-table
+  font-size: 13px
+  overflow: hidden
+  &[data-scroll='start']
+    .virtual-table__body-right,
+    .virtual-table__header-right,
+    .virtual-table__footer-right
+      box-shadow: -6px 0px 0px 0px #00000008, -3px 0px 0px 0px #00000008
+
+  &[data-scroll='middle']
+    .virtual-table__body-left,
+    .virtual-table__header-left,
+    .virtual-table__footer-left
+      box-shadow: 6px 0px 0px 0px #00000008, 3px 0px 0px 0px #00000008
+    .virtual-table__body-right,
+    .virtual-table__header-right,
+    .virtual-table__footer-right
+      box-shadow: -6px 0px 0px 0px #00000008, -3px 0px 0px 0px #00000008
+
+  &[data-scroll='end']
+    .virtual-table__body-left,
+    .virtual-table__header-left,
+    .virtual-table__footer-left
+      box-shadow: 6px 0px 0px 0px #00000008, 3px 0px 0px 0px #00000008
+
+  .virtual-table__header
+    display: flex
+
+    .virtual-table__header-left
+      position: relative
+      border-right: 1px solid lighten($grey-border, 2%)
+      .virtual-table__render-header
+        border-right: none
+
+    .virtual-table__header-right
+      position: relative
+      border-left: 1px solid lighten($grey-border, 2%)
+
+    .virtual-table__render-header
+      border-bottom: 1px solid $grey-border
+      height: 100%
+      box-sizing: border-box
+      overflow: hidden
+      min-height: 36px
+      vertical-align: middle
+      text-align: left
+      text-overflow: ellipsis
+      white-space: nowrap
+      padding: 0px 10px
+      color: #949398
+      font-weight: 400
+      line-height: 40px
+      cursor: default
+      &.bordered
+        border-right: 1px solid lighten($grey-border, 2%)
+      &.hovered
+        background-color: rgba($primary, .15)
+      &:hover
+        background-color: rgba($primary, .15)
+      &.is-right
+        text-align: right
+        justify-content: flex-end
+
+  .virtual-table__body
+    position: fixed
+    display: flex
+    z-index: 3
+
+    .virtual-table__body-left
+      border-right: 1px solid lighten($grey-border, 2%)
+      z-index: 2
+      .virtual-table__render-cell
+        border: none
+
+    .virtual-table__body-right
+      border-left: 1px solid lighten($grey-border, 2%)
+      z-index: 2
+
+    .virtual-table__render-cell
+      white-space: pre
+      word-break: break-word
+      line-height: 24px
+      overflow: hidden
+      padding-left: 10px
+      padding-right: 10px
+      height: 100%
+      display: flex
+      align-items: center
+      &.bordered
+        border-right: 1px solid lighten($grey-border, 2%)
+      &.last-row
+        border-bottom: 1px solid lighten($grey-border, 2%)
+      &.hovered
+        background-color: rgba($primary, .067)
+        &.striped:not(.selected):not(.last-active)
+          background-color: rgba($primary, .087)
+      &.is-right
+        text-align: right
+        justify-content: flex-end
+      &.selected
+        background-color: $table-row-current
+        &.bordered
+          border-right: 1px solid darken($table-row-current, 3%)
+          &.last-active
+            border-right: 1px solid rgba($primary, .1)
+        &.hovered
+          background-color: darken($table-row-current, 2%)
+      &.last-active
+        background-color: rgba($primary, .14)
+        &.hovered
+          background-color: darken(rgba($primary, .14), 4%)
+      &.striped:not(.selected):not(.last-active):not(.hovered)
+        background-color: $table-row-striped
+
+  .virtual-table__footer
+    display: flex
+    position: fixed
+    bottom: 0
+
+    .virtual-table__footer-left
+      position: relative
+      border-right: 1px solid lighten($grey-border, 2%)
+      .virtual-table__render-footer
+        border-right: none
+
+    .virtual-table__footer-right
+      position: relative
+      border-left: 1px solid lighten($grey-border, 2%)
+
+    .virtual-table__render-footer
+      border-top: 1px solid $grey-border
+      border-bottom: none
+      height: 100%
+      box-sizing: border-box
+      overflow: hidden
+      min-height: 36px
+      vertical-align: middle
+      text-align: left
+      text-overflow: ellipsis
+      white-space: nowrap
+      padding: 0px 10px
+      font-weight: 400
+      line-height: 40px
+      cursor: default
+      &.bordered
+        border-right: 1px solid lighten($grey-border, 2%)
+      &.hovered
+        background-color: rgba($primary, .15)
+      &.is-right
+        text-align: right
+        justify-content: flex-end
+      &:hover
+        background-color: rgba($primary, .15)
+
+  .virtual-table__slot
+    display: none
+
+  .virtual-table__error
+    position: fixed
+    width: 100%
+    z-index: 3
